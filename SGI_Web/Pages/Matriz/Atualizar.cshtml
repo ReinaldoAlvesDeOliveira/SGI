@@ -1,0 +1,168 @@
+﻿@page "{id}"
+@model SGI_Web.Pages.Matriz.AtualizarModel
+@{
+    var url = ViewData.FirstOrDefault(x => x.Key == "URL_API").Value;
+    var id = ViewData.FirstOrDefault(x => x.Key == "Id").Value;
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Matriz</h1>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Atualizar matriz</h6>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="col-md-12">
+                        <form>
+                            <div class="row mb-3">
+                                <div class="col-8">
+                                    <label>Nome <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="nome" />
+                                </div>
+                                <div class="col-4">
+                                    <label>Cnpj <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="cnpj" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label>Telefone <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="telefone" />
+                                </div>
+                                <div class="col-6">
+                                    <label>Email</label>
+                                    <input class="form-control mt-1" type="text" id="email" />
+
+                                </div>
+                            </div>
+                            <h4 class="">Endereço</h4>
+                            <hr />
+                            <div class="row mb-3">
+                                <div class="input-group col-3">
+                                    <input type="text" class="form-control small" placeholder="Pesquisar por cep" id="cep" />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary btn-cep" type="button">
+                                            <i class="fas fa-search fa-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <label>Rua <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="rua" />
+                                </div>
+                                <div class="col-3">
+                                    <label>Número <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="numero" />
+                                </div>
+                                <div class="col-3">
+                                    <label>Complemento</label>
+                                    <input class="form-control mt-1" type="text" id="complemento" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <label>Bairro <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="bairro" />
+                                </div>
+                                <div class="col-3">
+                                    <label>Cidade <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="cidade" />
+                                </div>
+                                <div class="col-3">
+                                    <label>Estado <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="estado" />
+                                </div>
+                                <div class="col-3">
+                                    <label>País <b class="text-red">*</b></label>
+                                    <input class="form-control mt-1" type="text" id="pais" />
+                                </div>
+                            </div>
+                        </form>
+                        <hr />
+                        <a class="btn btn-secondary" asp-page="/Matriz/Index">Voltar</a>
+                        <button type="button" class="btn btn-success rigth btn-salvar">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(function() {
+            $(document).ready(function() {
+                AcaoClickBotaoSalvar();
+                editarDados();
+            });
+
+            function AcaoClickBotaoSalvar() {
+                $(document).on("click", ".btn-salvar", function() {
+                    var data = MontarObjetoParaSalvar();
+                    $.ajax({
+                        url: `@url/Matriz/atualizar/@id`,
+                        data: JSON.stringify(data),
+                        type: "PUT",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(result) {
+                            window.location.href = "/Matriz/Index";
+                        },
+                        error(e) {
+                            console.log(e)
+                            alert("Ocorreu um erro ao editar matriz!")
+                        }
+                    })
+                });
+            }
+
+            $(document).on("click", ".btn-cep", function() {
+                var cep = $("#cep").val();
+                BuscarPorCep(cep);
+            });
+
+            function editarDados() {
+                $.get(`@url/Matriz/buscar-por-id/@id`, function(data) {
+                    $("#nome").val(data.nomeMatriz);
+                    $("#cnpj").val(data.cnpj);
+                    $("#telefone").val(data.telefone);
+                    $("#email").val(data.email);
+                    $("#rua").val(data.endereco.rua);
+                    $("#numero").val(data.endereco.numero);
+                    $("#cep").val(data.endereco.cep);
+                    $("#complemento").val(data.endereco.complemento);
+                    $("#bairro").val(data.endereco.bairro);
+                    $("#cidade").val(data.endereco.cidade);
+                    $("#estado").val(data.endereco.estado);
+                    $("#pais").val(data.endereco.pais);
+                })
+            }
+
+            function MontarObjetoParaSalvar() {
+                return {
+                    nomeMatriz: $("#nome").val(),
+                    cnpj: $("#cnpj").val(),
+                    telefone: $("#telefone").val(),
+                    email: $("#email").val(),
+                    endereco: {
+                        rua: $("#rua").val(),
+                        numero: $("#numero").val(),
+                        cep: $("#cep").val(),
+                        complemento: $("#complemento").val(),
+                        bairro: $("#bairro").val(),
+                        cidade: $("#cidade").val(),
+                        estado: $("#estado").val(),
+                        pais: $("#pais").val()
+                    }
+                }
+            }
+        })
+    </script>
+}
+

@@ -1,0 +1,74 @@
+﻿@page
+@model SGI_Web.Pages.Endereco.IndexModel
+@{
+    var url = ViewData.FirstOrDefault(x => x.Key == "URL_API").Value;
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Endereço</h1>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Lista de endereços</h6>
+            </div>
+            <div class="card-body">
+                <div>
+                    <br />
+                    <div class="mt-3">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script>
+        $(function() {
+            $(document).ready(function() {
+                var colunas = [
+                    {
+                        data: "id",
+                        visible: false
+                    },
+                    {
+                        title: 'Rua',
+                        data: "rua"
+                    },
+                    {
+                        title: 'Número',
+                        data: "numero"
+                    },
+                    {
+                        title: 'Bairro',
+                        data: "bairro"
+                    },
+                    {
+                        title: 'Cep',
+                        data: "cep"
+                    },
+                    {
+                        title: 'Cidade',
+                        data: "cidade"
+                    },
+                    {
+                        title: 'Estado',
+                        data: "estado"
+                    },
+                    {
+                        title: 'País',
+                        data: "pais"
+                    },
+                ];
+
+                MontarTabela(`@url/Endereco/obter-todos`, colunas);
+            });
+        })
+    </script>
+}
